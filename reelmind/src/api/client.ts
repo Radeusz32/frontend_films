@@ -8,7 +8,7 @@ async function apiRequest<T>(
   body?: unknown,
   queryParams?: Record<string, string | number | undefined>,
 ): Promise<T> {
-  if (config.apiMode === 'mock') {
+  if (config.apiMode === 'dev') {
     return mockRouter.handle<T>(method, path, body ?? queryParams)
   }
 

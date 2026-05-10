@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth.store'
+import { config } from '@/api/config'
 import AppInput from '@/components/ui/AppInput.vue'
 import AppButton from '@/components/ui/AppButton.vue'
 
@@ -51,18 +52,20 @@ async function loginAsDemo(role: 'admin' | 'user') {
         </AppButton>
       </form>
 
-      <div class="divider"><span>lub demo</span></div>
+      <template v-if="config.apiMode === 'dev'">
+        <div class="divider"><span>lub demo</span></div>
 
-      <div class="demo-buttons">
-        <AppButton variant="secondary" @click="loginAsDemo('user')" style="flex:1;justify-content:center">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          {{ t('auth.demo_user') }}
-        </AppButton>
-        <AppButton variant="ghost" @click="loginAsDemo('admin')" style="flex:1;justify-content:center">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          {{ t('auth.demo_admin') }}
-        </AppButton>
-      </div>
+        <div class="demo-buttons">
+          <AppButton variant="secondary" @click="loginAsDemo('user')" style="flex:1;justify-content:center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            {{ t('auth.demo_user') }}
+          </AppButton>
+          <AppButton variant="ghost" @click="loginAsDemo('admin')" style="flex:1;justify-content:center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            {{ t('auth.demo_admin') }}
+          </AppButton>
+        </div>
+      </template>
 
       <p class="auth-switch">{{ t('auth.no_account') }} <RouterLink to="/register">{{ t('auth.sign_up') }}</RouterLink></p>
     </div>

@@ -23,7 +23,8 @@ export const AuthAPI = {
   },
 
   async refresh(): Promise<string> {
-    const res = await http.post<RefreshResponse>('/auth/refresh')
+    const refresh = localStorage.getItem(config.refreshKey)
+    const res = await http.post<RefreshResponse>('/auth/refresh', { refresh })
     localStorage.setItem(config.tokenKey, res.access)
     return res.access
   },

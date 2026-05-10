@@ -48,7 +48,13 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       user.value = await AuthAPI.me()
     } catch {
-      logout()
+      // access token expired — try refresh before giving up
+      try {
+        await AuthAPI.refresh()
+        user.value = await AuthAPI.me()
+      } catch {
+        logout()
+      }
     }
   }
 
