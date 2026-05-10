@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { AdminAPI } from '@/api/modules/admin.api'
 import { MoviesAPI } from '@/api/modules/movies.api'
 import { useMovieStore } from '@/stores/movie.store'
+import { useToastStore } from '@/stores/toast.store'
 import AppButton from '@/components/ui/AppButton.vue'
 import AppBadge from '@/components/ui/AppBadge.vue'
 import type { AdminStats } from '@/api/modules/admin.api'
@@ -11,6 +12,7 @@ import type { User } from '@/types/user'
 
 const { t } = useI18n()
 const movieStore = useMovieStore()
+const toastStore = useToastStore()
 const stats = ref<AdminStats | null>(null)
 const users = ref<User[]>([])
 const activeTab = ref<'movies' | 'users'>('movies')
@@ -26,10 +28,16 @@ onMounted(async () => {
 })
 
 async function onDelete(id: number) {
-  await MoviesAPI.remove(id)
-  await movieStore.fetchMovies({ limit: 50 })
-  stats.value = await AdminAPI.getStats()
-  deleteConfirm.value = null
+  try {
+    await MoviesAPI.remove(id)
+    await movieStore.fetchMovies({ limit: 50 })
+    stats.value = await AdminAPI.getStats()
+    deleteConfirm.value = null
+    toastStore.success(t('toast.movie_deleted'))
+  } catch {
+    toastStore.error(t('toast.error_delete'))
+    deleteConfirm.value = null
+  }
 }
 </script>
 

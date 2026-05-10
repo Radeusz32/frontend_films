@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AppSidebar from '@/components/AppSidebar.vue'
 import AppNavbar from '@/components/AppNavbar.vue'
+import AppToast from '@/components/AppToast.vue'
 </script>
 
 <template>
@@ -13,6 +14,7 @@ import AppNavbar from '@/components/AppNavbar.vue'
       </main>
     </div>
   </div>
+  <AppToast />
 </template>
 
 <style scoped>

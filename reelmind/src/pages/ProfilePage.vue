@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth.store'
 import { useMovieStore } from '@/stores/movie.store'
+import { useToastStore } from '@/stores/toast.store'
 import { UserAPI } from '@/api/modules/user.api'
 import MovieCard from '@/components/MovieCard.vue'
 import StarRating from '@/components/ui/StarRating.vue'
@@ -14,6 +15,7 @@ import { formatDate } from '@/utils/format'
 const { t, locale } = useI18n()
 const authStore = useAuthStore()
 const movieStore = useMovieStore()
+const toastStore = useToastStore()
 
 const editing = ref(false)
 const editName = ref('')
@@ -29,6 +31,9 @@ async function saveEdit() {
     const updated = await UserAPI.updateProfile({ name: editName.value })
     if (authStore.user) authStore.user.name = updated.name
     editing.value = false
+    toastStore.success(t('toast.profile_saved'))
+  } catch {
+    toastStore.error(t('toast.error_profile'))
   } finally { editLoading.value = false }
 }
 function getRatedMovie(movieId: number) { return movieStore.movies.find((m) => m.id === movieId) }

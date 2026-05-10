@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import { MoviesAPI } from '@/api/modules/movies.api'
 import { UserAPI } from '@/api/modules/user.api'
 import { RatingsAPI } from '@/api/modules/ratings.api'
+import { i18n } from '@/i18n'
+import { useToastStore } from './toast.store'
 import type { Movie, MovieListParams, PaginatedMovies } from '@/types/movie'
 import type { Rating, CreateRatingPayload } from '@/types/rating'
 
@@ -16,6 +18,8 @@ export const useMovieStore = defineStore('movies', () => {
   const loading = ref(false)
   const searchLoading = ref(false)
   const error = ref<string | null>(null)
+
+  const t = (key: string) => i18n.global.t(key)
 
   async function fetchMovies(params?: MovieListParams): Promise<void> {
     loading.value = true
@@ -44,10 +48,7 @@ export const useMovieStore = defineStore('movies', () => {
   }
 
   async function search(query: string): Promise<void> {
-    if (!query.trim()) {
-      searchResults.value = []
-      return
-    }
+    if (!query.trim()) { searchResults.value = []; return }
     searchLoading.value = true
     try {
       const res = await MoviesAPI.search(query)
@@ -69,13 +70,19 @@ export const useMovieStore = defineStore('movies', () => {
 
   async function toggleWatchlist(movieId: number): Promise<void> {
     const inList = watchlist.value.some((m) => m.id === movieId)
-    if (inList) {
-      await UserAPI.removeFromWatchlist(movieId)
-      watchlist.value = watchlist.value.filter((m) => m.id !== movieId)
-    } else {
-      await UserAPI.addToWatchlist(movieId)
-      const movie = movies.value.find((m) => m.id === movieId) ?? currentMovie.value
-      if (movie) watchlist.value.push(movie)
+    try {
+      if (inList) {
+        await UserAPI.removeFromWatchlist(movieId)
+        watchlist.value = watchlist.value.filter((m) => m.id !== movieId)
+        useToastStore().success(t('toast.watchlist_removed'))
+      } else {
+        await UserAPI.addToWatchlist(movieId)
+        const movie = movies.value.find((m) => m.id === movieId) ?? currentMovie.value
+        if (movie) watchlist.value.push(movie)
+        useToastStore().success(t('toast.watchlist_added'))
+      }
+    } catch {
+      useToastStore().error(t('toast.error_watchlist'))
     }
   }
 
@@ -92,15 +99,26 @@ export const useMovieStore = defineStore('movies', () => {
   }
 
   async function rateMovie(payload: CreateRatingPayload): Promise<void> {
-    const rating = await RatingsAPI.create(payload)
-    const idx = userRatings.value.findIndex((r) => r.movieId === payload.movieId)
-    if (idx !== -1) userRatings.value[idx] = rating
-    else userRatings.value.push(rating)
+    try {
+      const rating = await RatingsAPI.create(payload)
+      const idx = userRatings.value.findIndex((r) => r.movieId === payload.movieId)
+      if (idx !== -1) userRatings.value[idx] = rating
+      else userRatings.value.push(rating)
+      useToastStore().success(t('toast.rating_saved'))
+    } catch {
+      useToastStore().error(t('toast.error_rating'))
+      throw new Error('rating failed')
+    }
   }
 
   async function removeRating(id: number): Promise<void> {
-    await RatingsAPI.remove(id)
-    userRatings.value = userRatings.value.filter((r) => r.id !== id)
+    try {
+      await RatingsAPI.remove(id)
+      userRatings.value = userRatings.value.filter((r) => r.id !== id)
+      useToastStore().success(t('toast.rating_removed'))
+    } catch {
+      useToastStore().error(t('toast.error_rating'))
+    }
   }
 
   function getUserRatingForMovie(movieId: number): Rating | undefined {
@@ -112,25 +130,11 @@ export const useMovieStore = defineStore('movies', () => {
   }
 
   return {
-    movies,
-    currentMovie,
-    watchlist,
-    userRatings,
-    searchResults,
-    pagination,
-    loading,
-    searchLoading,
-    error,
-    fetchMovies,
-    fetchMovie,
-    search,
-    fetchWatchlist,
-    toggleWatchlist,
-    isInWatchlist,
-    fetchUserRatings,
-    rateMovie,
-    removeRating,
-    getUserRatingForMovie,
-    clearSearch,
+    movies, currentMovie, watchlist, userRatings, searchResults,
+    pagination, loading, searchLoading, error,
+    fetchMovies, fetchMovie, search,
+    fetchWatchlist, toggleWatchlist, isInWatchlist,
+    fetchUserRatings, rateMovie, removeRating,
+    getUserRatingForMovie, clearSearch,
   }
 })

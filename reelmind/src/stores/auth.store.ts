@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { AuthAPI } from '@/api/modules/auth.api'
 import { config } from '@/api/config'
+import { i18n } from '@/i18n'
+import { useToastStore } from './toast.store'
 import type { User } from '@/types/user'
 import type { LoginPayload, RegisterPayload } from '@/types/auth'
 
@@ -14,12 +16,15 @@ export const useAuthStore = defineStore('auth', () => {
   const isAdmin = computed(() => user.value?.role === 'admin')
   const role = computed(() => user.value?.role ?? null)
 
+  const t = (key: string) => i18n.global.t(key)
+
   async function login(payload: LoginPayload): Promise<void> {
     loading.value = true
     error.value = null
     try {
       const res = await AuthAPI.login(payload)
       user.value = res.user
+      useToastStore().success(t('toast.login_success'))
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Login failed'
       throw e
@@ -34,6 +39,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const res = await AuthAPI.register(payload)
       user.value = res.user
+      useToastStore().success(t('toast.register_success'))
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Register failed'
       throw e
@@ -48,7 +54,6 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       user.value = await AuthAPI.me()
     } catch {
-      // access token expired — try refresh before giving up
       try {
         await AuthAPI.refresh()
         user.value = await AuthAPI.me()
@@ -62,6 +67,7 @@ export const useAuthStore = defineStore('auth', () => {
     AuthAPI.logout()
     user.value = null
     error.value = null
+    useToastStore().success(t('toast.logout_success'))
   }
 
   function clearError(): void {
@@ -69,16 +75,8 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   return {
-    user,
-    loading,
-    error,
-    isAuthenticated,
-    isAdmin,
-    role,
-    login,
-    register,
-    fetchMe,
-    logout,
-    clearError,
+    user, loading, error,
+    isAuthenticated, isAdmin, role,
+    login, register, fetchMe, logout, clearError,
   }
 })
