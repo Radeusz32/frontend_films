@@ -1,0 +1,55 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color-scheme: dark;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background: #020617;
+  color: #e2e8f0;
+  min-height: 100vh;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+p { margin: 0; }
+
+a { color: inherit; }
+
+img { display: block; max-width: 100%; }
+
+button { font-family: inherit; }
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+textarea { resize: vertical; }
+
+:focus-visible {
+  outline: 2px solid #e11d48;
+  outline-offset: 2px;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+::selection { background: rgba(225, 29, 72, 0.3); }
