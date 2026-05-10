@@ -13,9 +13,9 @@ const movieStore = useMovieStore()
 
 const genres: MovieGenre[] = ['Action', 'Comedy', 'Drama', 'Horror', 'Sci-Fi', 'Thriller', 'Romance', 'Animation', 'Documentary', 'Fantasy']
 const sortOptions = [
-  { value: 'rating', label: '⭐ Rating' },
-  { value: 'year', label: '📅 Year' },
-  { value: 'title', label: '🔤 Title' },
+  { value: 'rating', label: 'Ocena' },
+  { value: 'year', label: 'Rok' },
+  { value: 'title', label: 'Tytuł' },
 ]
 
 const selectedGenre = ref<MovieGenre | undefined>(undefined)
@@ -23,18 +23,10 @@ const sortBy = ref<'rating' | 'year' | 'title'>('rating')
 const page = ref(1)
 
 async function load() {
-  await movieStore.fetchMovies({
-    genre: selectedGenre.value,
-    sortBy: sortBy.value,
-    page: page.value,
-    limit: 20,
-  })
+  await movieStore.fetchMovies({ genre: selectedGenre.value, sortBy: sortBy.value, page: page.value, limit: 20 })
 }
 
-watch([selectedGenre, sortBy], () => {
-  page.value = 1
-  load()
-})
+watch([selectedGenre, sortBy], () => { page.value = 1; load() })
 
 onMounted(() => {
   const q = route.query
@@ -50,67 +42,60 @@ onMounted(() => {
     </div>
 
     <div class="filters">
-      <div class="genre-filters">
-        <button
-          class="genre-btn"
-          :class="{ active: !selectedGenre }"
-          @click="selectedGenre = undefined"
-        >All</button>
-        <button
-          v-for="g in genres"
-          :key="g"
-          class="genre-btn"
-          :class="{ active: selectedGenre === g }"
-          @click="selectedGenre = g"
-        >{{ g }}</button>
+      <div class="filter-row">
+        <div class="genre-filters">
+          <button class="chip" :class="{ active: !selectedGenre }" @click="selectedGenre = undefined">Wszystkie</button>
+          <button v-for="g in genres" :key="g" class="chip" :class="{ active: selectedGenre === g }" @click="selectedGenre = g">{{ g }}</button>
+        </div>
       </div>
-
-      <div class="sort-filters">
-        <button
-          v-for="opt in sortOptions"
-          :key="opt.value"
-          class="sort-btn"
-          :class="{ active: sortBy === opt.value }"
-          @click="sortBy = opt.value as typeof sortBy"
-        >{{ opt.label }}</button>
+      <div class="filter-row">
+        <div class="sort-filters">
+          <span class="sort-label">Sortuj:</span>
+          <button v-for="opt in sortOptions" :key="opt.value" class="sort-btn" :class="{ active: sortBy === opt.value }" @click="sortBy = opt.value as typeof sortBy">{{ opt.label }}</button>
+        </div>
       </div>
     </div>
 
     <MovieGrid :movies="movieStore.movies" :loading="movieStore.loading" :skeleton-count="20" />
 
     <div v-if="!movieStore.loading && movieStore.pagination.count > 0" class="pagination">
-      <AppButton variant="secondary" :disabled="page === 1" @click="page--; load()">
-        ← {{ t('common.previous') }}
+      <AppButton variant="ghost" :disabled="page === 1" @click="page--; load()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        {{ t('common.previous') }}
       </AppButton>
-      <span class="page-info">
-        {{ page }} {{ t('common.page_of') }} {{ Math.ceil(movieStore.pagination.count / 20) }}
-      </span>
-      <AppButton variant="secondary" :disabled="!movieStore.pagination.next" @click="page++; load()">
-        {{ t('common.next') }} →
+      <span class="page-info">{{ page }} / {{ Math.ceil(movieStore.pagination.count / 20) }}</span>
+      <AppButton variant="ghost" :disabled="!movieStore.pagination.next" @click="page++; load()">
+        {{ t('common.next') }}
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
       </AppButton>
     </div>
   </div>
 </template>
 
 <style scoped>
-.movies-page { max-width: 1400px; margin: 0 auto; padding: 40px; }
+.movies-page { max-width: 1500px; margin: 0 auto; padding: 44px 52px; }
 .page-header { margin-bottom: 28px; }
-.page-header h1 { font-size: 32px; font-weight: 800; color: #e2e8f0; margin: 0; }
+.page-header h1 { font-size: 30px; font-weight: 900; color: var(--text, #fff); margin: 0; letter-spacing: -0.04em; }
 
-.filters { display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px; }
-.genre-filters { display: flex; flex-wrap: wrap; gap: 8px; }
-.sort-filters { display: flex; gap: 8px; }
+.filters { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.filter-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.genre-filters, .sort-filters { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+.sort-label { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px; }
 
-.genre-btn, .sort-btn {
-  padding: 6px 14px; border-radius: 20px;
-  background: #1e293b; border: 1px solid #334155;
-  color: #94a3b8; font-size: 13px; cursor: pointer; transition: all 0.2s;
+.chip, .sort-btn {
+  padding: 6px 14px; border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text-muted); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.18s; font-family: inherit;
 }
-.genre-btn:hover, .sort-btn:hover { color: #e2e8f0; border-color: #64748b; }
-.genre-btn.active, .sort-btn.active { background: #e11d48; border-color: #e11d48; color: #fff; }
+.chip:hover, .sort-btn:hover { color: var(--text, #fff); background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.15); }
+.chip.active, .sort-btn.active { background: var(--blue, #4361ee); border-color: var(--blue, #4361ee); color: #fff; }
 
-.pagination { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 40px; }
-.page-info { color: #94a3b8; font-size: 14px; }
+.sort-btn { border-radius: var(--radius-sm, 8px); }
 
-@media (max-width: 768px) { .movies-page { padding: 20px; } }
+.pagination { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 48px; }
+.page-info { color: var(--text-muted); font-size: 14px; font-weight: 600; min-width: 60px; text-align: center; }
+
+@media (max-width: 768px) { .movies-page { padding: 24px 20px; } }
 </style>

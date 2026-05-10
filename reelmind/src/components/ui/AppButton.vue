@@ -5,13 +5,7 @@ withDefaults(defineProps<{
   loading?: boolean
   disabled?: boolean
   type?: 'button' | 'submit' | 'reset'
-}>(), {
-  variant: 'primary',
-  size: 'md',
-  loading: false,
-  disabled: false,
-  type: 'button',
-})
+}>(), { variant: 'primary', size: 'md', loading: false, disabled: false, type: 'button' })
 </script>
 
 <template>
@@ -28,40 +22,34 @@ withDefaults(defineProps<{
 
 <style scoped>
 .btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 8px;
+  border: none; border-radius: var(--radius-sm, 8px);
+  font-family: inherit; font-weight: 700; cursor: pointer;
+  transition: all 0.18s; white-space: nowrap; letter-spacing: -0.01em;
 }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
 .btn--sm { padding: 6px 14px; font-size: 13px; }
 .btn--md { padding: 10px 20px; font-size: 14px; }
-.btn--lg { padding: 14px 28px; font-size: 16px; }
+.btn--lg { padding: 13px 26px; font-size: 15px; }
 
-.btn--primary { background: #e11d48; color: #fff; }
-.btn--primary:hover:not(:disabled) { background: #be123c; }
+.btn--primary { background: var(--blue, #4361ee); color: #fff; box-shadow: 0 2px 12px rgba(67,97,238,0.4); }
+.btn--primary:hover:not(:disabled) { background: var(--blue-dark, #3451db); box-shadow: 0 4px 20px rgba(67,97,238,0.5); transform: translateY(-1px); }
+.btn--primary:active:not(:disabled) { transform: translateY(0); }
 
-.btn--secondary { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; }
-.btn--secondary:hover:not(:disabled) { background: #263348; }
+.btn--secondary { background: rgba(255,255,255,0.1); color: var(--text, #fff); border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(4px); }
+.btn--secondary:hover:not(:disabled) { background: rgba(255,255,255,0.16); border-color: rgba(255,255,255,0.25); }
 
-.btn--ghost { background: transparent; color: #94a3b8; }
-.btn--ghost:hover:not(:disabled) { color: #e2e8f0; background: rgba(255,255,255,0.05); }
+.btn--ghost { background: transparent; color: var(--text-muted, rgba(255,255,255,0.55)); border: 1px solid rgba(255,255,255,0.1); }
+.btn--ghost:hover:not(:disabled) { color: var(--text, #fff); background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.2); }
 
-.btn--danger { background: #dc2626; color: #fff; }
-.btn--danger:hover:not(:disabled) { background: #b91c1c; }
+.btn--danger { background: #ef4444; color: #fff; }
+.btn--danger:hover:not(:disabled) { background: #dc2626; }
 
 .btn-spinner {
   width: 14px; height: 14px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  border: 2px solid rgba(255,255,255,0.25); border-top-color: #fff;
+  border-radius: 50%; animation: spin 0.7s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>

@@ -1,12 +1,5 @@
 <script setup lang="ts">
-defineProps<{
-  modelValue: string
-  label?: string
-  type?: string
-  placeholder?: string
-  error?: string
-  id?: string
-}>()
+defineProps<{ modelValue: string; label?: string; type?: string; placeholder?: string; error?: string; id?: string }>()
 defineEmits<{ 'update:modelValue': [value: string] }>()
 </script>
 
@@ -28,18 +21,16 @@ defineEmits<{ 'update:modelValue': [value: string] }>()
 
 <style scoped>
 .field { display: flex; flex-direction: column; gap: 6px; }
-.label { font-size: 13px; font-weight: 500; color: #94a3b8; }
+.label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
 .input {
-  background: #0f172a;
-  border: 1px solid #334155;
-  border-radius: 8px;
-  padding: 10px 14px;
-  color: #e2e8f0;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius-sm, 8px);
+  padding: 11px 14px; color: var(--text, #fff);
+  font-size: 14px; outline: none; transition: all 0.2s;
 }
-.input:focus { border-color: #e11d48; }
-.input--error { border-color: #ef4444; }
-.error-msg { font-size: 12px; color: #ef4444; }
+.input::placeholder { color: var(--text-light, rgba(255,255,255,0.3)); }
+.input:focus { border-color: var(--blue, #4361ee); background: rgba(255,255,255,0.09); box-shadow: 0 0 0 3px var(--blue-light, rgba(67,97,238,0.18)); }
+.input--error { border-color: var(--error, #ef4444); }
+.error-msg { font-size: 12px; color: var(--error, #ef4444); }
 </style>

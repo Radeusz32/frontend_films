@@ -1,7 +1,5 @@
 <script setup lang="ts">
-withDefaults(defineProps<{ variant?: 'default' | 'success' | 'warning' | 'danger' | 'info' }>(), {
-  variant: 'default',
-})
+withDefaults(defineProps<{ variant?: 'default' | 'success' | 'warning' | 'danger' | 'info' }>(), { variant: 'default' })
 </script>
 
 <template>
@@ -10,18 +8,15 @@ withDefaults(defineProps<{ variant?: 'default' | 'success' | 'warning' | 'danger
 
 <style scoped>
 .badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 10px;
-  border-radius: 999px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 999px;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  border: 1px solid transparent;
 }
-.badge--default { background: #1e293b; color: #94a3b8; }
-.badge--success { background: rgba(34,197,94,0.15); color: #22c55e; }
-.badge--warning { background: rgba(234,179,8,0.15); color: #eab308; }
-.badge--danger { background: rgba(239,68,68,0.15); color: #ef4444; }
-.badge--info { background: rgba(59,130,246,0.15); color: #3b82f6; }
+.badge--default { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.75); border-color: rgba(255,255,255,0.1); }
+.badge--success { background: rgba(34,197,94,0.12); color: #4ade80; border-color: rgba(34,197,94,0.2); }
+.badge--warning { background: rgba(245,158,11,0.12); color: #fbbf24; border-color: rgba(245,158,11,0.2); }
+.badge--danger { background: rgba(239,68,68,0.12); color: #f87171; border-color: rgba(239,68,68,0.2); }
+.badge--info { background: rgba(67,97,238,0.15); color: #818cf8; border-color: rgba(67,97,238,0.25); }
 </style>

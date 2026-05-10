@@ -32,83 +32,57 @@ async function loginAsDemo(role: 'admin' | 'user') {
 <template>
   <div class="auth-page">
     <div class="auth-card">
-      <div class="auth-logo">
+      <RouterLink to="/" class="auth-logo">
         <span class="logo-reel">Reel</span><span class="logo-mind">Mind</span>
-      </div>
+      </RouterLink>
       <h1>{{ t('auth.login') }}</h1>
+      <p class="auth-sub">Witaj z powrotem!</p>
 
-      <div v-if="authStore.error" class="auth-error">{{ authStore.error }}</div>
+      <div v-if="authStore.error" class="auth-error">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        {{ authStore.error }}
+      </div>
 
       <form @submit.prevent="handleSubmit" class="auth-form">
-        <AppInput
-          v-model="email"
-          id="email"
-          :label="t('auth.email')"
-          type="email"
-          placeholder="you@example.com"
-        />
-        <AppInput
-          v-model="password"
-          id="password"
-          :label="t('auth.password')"
-          type="password"
-          placeholder="••••••••"
-        />
-        <AppButton type="submit" size="lg" :loading="authStore.loading" style="width: 100%">
+        <AppInput v-model="email" id="email" :label="t('auth.email')" type="email" placeholder="you@example.com" />
+        <AppInput v-model="password" id="password" :label="t('auth.password')" type="password" placeholder="••••••••" />
+        <AppButton type="submit" size="lg" :loading="authStore.loading" style="width:100%;justify-content:center">
           {{ authStore.loading ? t('auth.logging_in') : t('auth.sign_in') }}
         </AppButton>
       </form>
 
-      <div class="divider"><span>or</span></div>
+      <div class="divider"><span>lub demo</span></div>
 
       <div class="demo-buttons">
-        <AppButton variant="secondary" @click="loginAsDemo('user')" style="flex: 1">
-          👤 {{ t('auth.demo_user') }}
+        <AppButton variant="secondary" @click="loginAsDemo('user')" style="flex:1;justify-content:center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          {{ t('auth.demo_user') }}
         </AppButton>
-        <AppButton variant="secondary" @click="loginAsDemo('admin')" style="flex: 1">
-          🛡️ {{ t('auth.demo_admin') }}
+        <AppButton variant="ghost" @click="loginAsDemo('admin')" style="flex:1;justify-content:center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          {{ t('auth.demo_admin') }}
         </AppButton>
       </div>
 
-      <p class="auth-switch">
-        {{ t('auth.no_account') }}
-        <RouterLink to="/register">{{ t('auth.sign_up') }}</RouterLink>
-      </p>
+      <p class="auth-switch">{{ t('auth.no_account') }} <RouterLink to="/register">{{ t('auth.sign_up') }}</RouterLink></p>
     </div>
   </div>
 </template>
 
 <style scoped>
-.auth-page {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  background: radial-gradient(ellipse at 50% 0%, rgba(225,29,72,0.1) 0%, transparent 60%), #020617;
-  padding: 20px;
-}
-.auth-card {
-  background: #0f172a; border: 1px solid #1e293b;
-  border-radius: 20px; padding: 40px; width: 100%; max-width: 420px;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
-}
-.auth-logo { font-size: 28px; font-weight: 800; margin-bottom: 8px; text-align: center; }
-.logo-reel { color: #e2e8f0; }
-.logo-mind { color: #e11d48; }
-.auth-card h1 { font-size: 22px; font-weight: 700; color: #e2e8f0; margin: 0 0 24px; text-align: center; }
-
-.auth-error {
-  background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
-  color: #ef4444; border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 16px;
-}
+.auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(ellipse at 50% 0%, rgba(67,97,238,0.12) 0%, transparent 60%), var(--bg, #07091a); padding: 20px; }
+.auth-card { background: var(--bg-card, #0d1426); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-xl, 20px); padding: 44px 40px; width: 100%; max-width: 420px; box-shadow: 0 24px 80px rgba(0,0,0,0.6); }
+.auth-logo { display: block; text-align: center; font-size: 26px; font-weight: 900; text-decoration: none; margin-bottom: 24px; letter-spacing: -0.05em; }
+.logo-reel { color: var(--text, #fff); }
+.logo-mind { color: var(--blue, #4361ee); }
+.auth-card h1 { font-size: 22px; font-weight: 800; color: var(--text, #fff); margin: 0 0 4px; text-align: center; letter-spacing: -0.03em; }
+.auth-sub { text-align: center; color: var(--text-muted); font-size: 14px; margin: 0 0 28px; }
+.auth-error { display: flex; align-items: center; gap: 8px; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: #f87171; border-radius: var(--radius-sm, 8px); padding: 10px 14px; font-size: 13px; margin-bottom: 20px; }
 .auth-form { display: flex; flex-direction: column; gap: 16px; }
-
-.divider {
-  display: flex; align-items: center; gap: 12px; margin: 20px 0;
-  color: #334155; font-size: 12px;
-}
-.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #1e293b; }
-
+.divider { display: flex; align-items: center; gap: 12px; margin: 22px 0; color: var(--text-light); font-size: 12px; font-weight: 600; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
 .demo-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
-
-.auth-switch { text-align: center; font-size: 14px; color: #64748b; margin: 16px 0 0; }
-.auth-switch a { color: #e11d48; text-decoration: none; font-weight: 600; }
+.auth-switch { text-align: center; font-size: 14px; color: var(--text-muted); margin: 16px 0 0; }
+.auth-switch a { color: var(--blue, #4361ee); text-decoration: none; font-weight: 700; }
 .auth-switch a:hover { text-decoration: underline; }
 </style>

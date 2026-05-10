@@ -23,16 +23,12 @@ const newReleases = computed(() =>
 const recommendedMovies = computed(() =>
   recStore.recommendations.map((r) => r.movie).slice(0, 10),
 )
-
 const heroMovie = computed(() => topRated.value[0])
 
 onMounted(async () => {
   await movieStore.fetchMovies({ limit: 50 })
   if (authStore.isAuthenticated) {
-    await Promise.all([
-      recStore.fetchRecommendations(),
-      movieStore.fetchWatchlist(),
-    ])
+    await Promise.all([recStore.fetchRecommendations(), movieStore.fetchWatchlist()])
   }
 })
 </script>
@@ -40,32 +36,38 @@ onMounted(async () => {
 <template>
   <div class="home">
     <section v-if="heroMovie" class="hero" :style="{ backgroundImage: `url(${heroMovie.backdropUrl})` }">
-      <div class="hero-gradient" />
+      <div class="hero-overlay" />
       <div class="hero-content">
-        <h1 class="hero-title">
-          {{ t('home.hero_title') }}
-          <span class="hero-highlight">{{ t('home.hero_title_highlight') }}</span>
-        </h1>
-        <p class="hero-subtitle">{{ t('home.hero_subtitle') }}</p>
+        <div class="hero-origin">
+          <span class="hero-rm-badge">RM</span>
+          <span class="hero-original-text">ReelMind original</span>
+        </div>
+
+        <h1 class="hero-title">{{ heroMovie.title }}</h1>
+
+        <div class="hero-meta">
+          <span class="hero-year">{{ heroMovie.year }}</span>
+          <span class="hero-sep">·</span>
+          <span class="hero-duration">{{ heroMovie.duration }} min</span>
+          <span class="hero-sep">·</span>
+          <span class="hero-genre-badge">{{ heroMovie.genre[0] }}</span>
+        </div>
+
+        <div class="hero-rank">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          <span>#1 Najwyżej oceniany dzisiaj</span>
+        </div>
+
+        <p class="hero-desc">{{ heroMovie.description?.slice(0, 160) }}{{ (heroMovie.description?.length ?? 0) > 160 ? '...' : '' }}</p>
+
         <div class="hero-actions">
-          <AppButton size="lg" @click="router.push({ name: 'movies' })">
-            🎬 {{ t('home.hero_cta') }}
+          <AppButton size="lg" @click="router.push({ name: 'movie', params: { id: heroMovie.id } })">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Odtwórz
           </AppButton>
-          <AppButton
-            v-if="authStore.isAuthenticated"
-            size="lg"
-            variant="secondary"
-            @click="router.push({ name: 'recommendations' })"
-          >
-            ✨ {{ t('home.hero_cta_recommendations') }}
-          </AppButton>
-          <AppButton
-            v-else
-            size="lg"
-            variant="secondary"
-            @click="router.push({ name: 'login' })"
-          >
-            {{ t('auth.sign_in') }}
+          <AppButton size="lg" variant="secondary" @click="router.push({ name: 'movie', params: { id: heroMovie.id } })">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Więcej info
           </AppButton>
         </div>
       </div>
@@ -73,7 +75,7 @@ onMounted(async () => {
 
     <div class="content">
       <MovieRow
-        v-if="authStore.isAuthenticated && recommendedMovies.length > 0"
+        v-if="authStore.isAuthenticated && movieStore.watchlist.length > 0"
         :title="t('home.your_watchlist')"
         :movies="movieStore.watchlist"
         :loading="movieStore.loading"
@@ -91,7 +93,7 @@ onMounted(async () => {
       />
 
       <MovieRow
-        :title="t('home.popular')"
+        :title="`Popularne na ReelMind`"
         :movies="movieStore.movies.slice(0, 10)"
         :loading="movieStore.loading"
         see-all-route="/movies"
@@ -122,35 +124,71 @@ onMounted(async () => {
 
 .hero {
   position: relative;
-  height: 580px;
-  background-size: cover;
-  background-position: center top;
+  height: 88vh; min-height: 560px; max-height: 780px;
+  background-size: cover; background-position: center 15%;
   display: flex; align-items: flex-end;
 }
-.hero-gradient {
+.hero-overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(to right, rgba(2,6,23,0.9) 0%, rgba(2,6,23,0.4) 60%, transparent 100%),
-              linear-gradient(to top, rgba(2,6,23,1) 0%, transparent 40%);
+  background:
+    linear-gradient(to right, rgba(7,9,26,0.97) 0%, rgba(7,9,26,0.55) 50%, rgba(7,9,26,0.1) 100%),
+    linear-gradient(to top, var(--bg, #07091a) 0%, rgba(7,9,26,0.6) 25%, transparent 55%);
 }
 .hero-content {
   position: relative; z-index: 1;
-  padding: 0 40px 60px;
-  max-width: 600px;
+  padding: 0 52px 72px;
+  max-width: 580px;
 }
+
+.hero-origin { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.hero-rm-badge {
+  background: var(--blue, #4361ee); color: #fff;
+  font-size: 11px; font-weight: 900; padding: 4px 9px; border-radius: 7px;
+  letter-spacing: 0.05em;
+}
+.hero-original-text { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); letter-spacing: 0.02em; }
+
 .hero-title {
-  font-size: clamp(36px, 5vw, 60px);
-  font-weight: 800; color: #f1f5f9;
-  margin: 0 0 16px; line-height: 1.1;
+  font-size: clamp(38px, 5vw, 68px);
+  font-weight: 900; color: #fff;
+  margin: 0 0 16px; line-height: 1.0;
+  letter-spacing: -0.04em;
 }
-.hero-highlight { color: #e11d48; display: block; }
-.hero-subtitle { font-size: 16px; color: #94a3b8; margin: 0 0 28px; max-width: 420px; line-height: 1.6; }
+
+.hero-meta {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 12px; flex-wrap: wrap;
+}
+.hero-year, .hero-duration { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.65); }
+.hero-sep { color: rgba(255,255,255,0.25); }
+.hero-genre-badge {
+  border: 1px solid rgba(255,255,255,0.35); border-radius: 4px;
+  padding: 2px 8px; font-size: 12px; font-weight: 700;
+  color: rgba(255,255,255,0.75); letter-spacing: 0.04em;
+}
+
+.hero-rank {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.85);
+  margin-bottom: 16px;
+}
+.hero-rank svg { color: rgba(255,255,255,0.5); }
+
+.hero-desc {
+  font-size: 15px; color: rgba(255,255,255,0.65);
+  margin: 0 0 28px; max-width: 420px; line-height: 1.75;
+}
+
 .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-.content { max-width: 1400px; margin: 0 auto; padding: 40px 40px; }
+.content {
+  max-width: 1500px; margin: 0 auto;
+  padding: 44px 52px 72px;
+}
 
 @media (max-width: 768px) {
-  .hero { height: 440px; }
-  .hero-content { padding: 0 20px 40px; }
-  .content { padding: 30px 20px; }
+  .hero { height: 70vh; min-height: 440px; }
+  .hero-content { padding: 0 24px 44px; }
+  .content { padding: 32px 20px 56px; }
 }
 </style>

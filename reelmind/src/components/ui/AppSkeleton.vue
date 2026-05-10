@@ -12,9 +12,9 @@ defineProps<{ width?: string; height?: string; rounded?: boolean }>()
 
 <style scoped>
 .skeleton {
-  background: linear-gradient(90deg, #1e293b 25%, #263348 50%, #1e293b 75%);
+  background: linear-gradient(90deg, #111827 25%, #1a2540 50%, #111827 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 1.6s ease-in-out infinite;
   border-radius: 6px;
 }
 .skeleton--rounded { border-radius: 50%; }
