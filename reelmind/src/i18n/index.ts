@@ -4,7 +4,7 @@ import en from './en'
 
 
 
-const essa = ' xDD';
+
 const browserLang = navigator.language.startsWith('pl') ? 'pl' : 'en'
 
 export const i18n = createI18n({
