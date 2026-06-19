@@ -6,6 +6,7 @@ import type {
   CreateMoviePayload,
   UpdateMoviePayload,
 } from '@/types/movie'
+import type { MovieReviewsResponse } from '@/types/rating'
 
 export const MoviesAPI = {
   getAll(params?: MovieListParams): Promise<PaginatedMovies> {
@@ -33,5 +34,9 @@ export const MoviesAPI = {
 
   remove(id: number): Promise<void> {
     return http.delete<void>(`/movies/${id}`)
+  },
+
+  getReviews(id: number): Promise<MovieReviewsResponse> {
+    return http.get<MovieReviewsResponse>(`/movies/${id}/reviews`)
   },
 }

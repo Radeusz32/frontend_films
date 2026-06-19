@@ -136,5 +136,7 @@ export default {
     error_rating: 'Nie udało się zapisać oceny',
     error_profile: 'Nie udało się zapisać profilu',
     error_delete: 'Nie udało się usunąć filmu',
+    onboarding_saved: 'Preferencje zapisane! Rekomendacje są gotowe.',
+    onboarding_error: 'Nie udało się zapisać preferencji.',
   },
 }

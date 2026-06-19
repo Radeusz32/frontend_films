@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.store'
 
 const route = useRoute()
-const router = useRouter()
 const authStore = useAuthStore()
 </script>
 
@@ -160,6 +159,10 @@ const authStore = useAuthStore()
   cursor: pointer;
 }
 .sidebar-avatar:hover { border-color: var(--blue, #4361ee); }
+
+@media (max-width: 1024px) {
+  .sidebar { width: 56px; }
+}
 
 @media (max-width: 768px) {
   .sidebar { display: none; }

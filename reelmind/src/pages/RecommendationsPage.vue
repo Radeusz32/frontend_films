@@ -90,5 +90,17 @@ onMounted(() => recStore.fetchRecommendations())
 .rec-reason { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin: 0; }
 .reason-label { color: var(--blue, #4361ee); font-weight: 700; }
 
-@media (max-width: 768px) { .rec-page { padding: 24px 20px; } }
+@media (max-width: 1024px) {
+  .rec-page { padding: 32px 28px; }
+  .rec-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+}
+@media (max-width: 768px) {
+  .rec-page { padding: 20px 16px; }
+  .page-header { flex-direction: column; gap: 14px; }
+  .page-header h1 { font-size: 24px; }
+  .rec-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+}
+@media (max-width: 420px) {
+  .rec-grid { grid-template-columns: repeat(2, 1fr); }
+}
 </style>

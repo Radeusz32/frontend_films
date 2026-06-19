@@ -136,5 +136,7 @@ export default {
     error_rating: 'Failed to save rating',
     error_profile: 'Failed to save profile',
     error_delete: 'Failed to delete movie',
+    onboarding_saved: 'Preferences saved! Your recommendations are ready.',
+    onboarding_error: 'Failed to save preferences.',
   },
 }

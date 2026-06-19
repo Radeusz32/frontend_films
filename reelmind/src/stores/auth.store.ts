@@ -7,16 +7,31 @@ import { useToastStore } from './toast.store'
 import type { User } from '@/types/user'
 import type { LoginPayload, RegisterPayload } from '@/types/auth'
 
+const SESSION_KEY = 'rm_rec_popup_shown'
+
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
+  const showRecPopup = ref(false)
 
   const isAuthenticated = computed(() => user.value !== null)
   const isAdmin = computed(() => user.value?.role === 'admin')
   const role = computed(() => user.value?.role ?? null)
+  const needsOnboarding = computed(() => user.value !== null && user.value.onboardingCompleted === false)
 
   const t = (key: string) => i18n.global.t(key)
+
+  function _triggerRecPopup() {
+    if (!sessionStorage.getItem(SESSION_KEY)) {
+      showRecPopup.value = true
+      sessionStorage.setItem(SESSION_KEY, '1')
+    }
+  }
+
+  function closeRecPopup() {
+    showRecPopup.value = false
+  }
 
   async function login(payload: LoginPayload): Promise<void> {
     loading.value = true
@@ -25,6 +40,7 @@ export const useAuthStore = defineStore('auth', () => {
       const res = await AuthAPI.login(payload)
       user.value = res.user
       useToastStore().success(t('toast.login_success'))
+      _triggerRecPopup()
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Login failed'
       throw e
@@ -75,8 +91,8 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   return {
-    user, loading, error,
-    isAuthenticated, isAdmin, role,
-    login, register, fetchMe, logout, clearError,
+    user, loading, error, showRecPopup,
+    isAuthenticated, isAdmin, role, needsOnboarding,
+    login, register, fetchMe, logout, clearError, closeRecPopup,
   }
 })

@@ -97,5 +97,10 @@ onMounted(() => {
 .pagination { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 48px; }
 .page-info { color: var(--text-muted); font-size: 14px; font-weight: 600; min-width: 60px; text-align: center; }
 
-@media (max-width: 768px) { .movies-page { padding: 24px 20px; } }
+@media (max-width: 1024px) { .movies-page { padding: 32px 28px; } }
+@media (max-width: 768px) {
+  .movies-page { padding: 20px 16px; }
+  .page-header h1 { font-size: 24px; }
+  .chip, .sort-btn { padding: 5px 11px; font-size: 12px; }
+}
 </style>

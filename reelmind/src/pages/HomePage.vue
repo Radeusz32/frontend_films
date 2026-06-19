@@ -186,9 +186,20 @@ onMounted(async () => {
   padding: 44px 52px 72px;
 }
 
+@media (max-width: 1024px) {
+  .content { padding: 36px 32px 60px; }
+}
+
 @media (max-width: 768px) {
-  .hero { height: 70vh; min-height: 440px; }
-  .hero-content { padding: 0 24px 44px; }
-  .content { padding: 32px 20px 56px; }
+  .hero { height: 72vh; min-height: 420px; max-height: 640px; }
+  .hero-content { padding: 0 20px 40px; max-width: 100%; }
+  .hero-title { font-size: clamp(28px, 8vw, 48px); }
+  .hero-desc { font-size: 14px; }
+  .content { padding: 24px 16px 48px; }
+}
+
+@media (max-width: 480px) {
+  .hero { height: 65vh; min-height: 380px; }
+  .hero-actions { gap: 8px; }
 }
 </style>

@@ -1,5 +1,5 @@
 import { http } from '@/api/client'
-import type { User, UpdateUserPayload } from '@/types/user'
+import type { User, UpdateUserPayload, UserPreferences, SavePreferencesPayload } from '@/types/user'
 import type { Movie } from '@/types/movie'
 
 export const UserAPI = {
@@ -21,5 +21,17 @@ export const UserAPI = {
 
   removeFromWatchlist(movieId: number): Promise<void> {
     return http.delete<void>(`/user/watchlist/${movieId}`)
+  },
+
+  getOnboarding(): Promise<UserPreferences> {
+    return http.get<UserPreferences>('/user/onboarding')
+  },
+
+  saveOnboarding(payload: SavePreferencesPayload): Promise<User> {
+    return http.post<User>('/user/onboarding', payload)
+  },
+
+  dismissOnboarding(): Promise<User> {
+    return http.post<User>('/user/onboarding/dismiss')
   },
 }

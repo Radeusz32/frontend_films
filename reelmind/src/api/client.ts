@@ -1,5 +1,4 @@
 import { config } from './config'
-import { mockRouter } from './mockRouter'
 import { ApiException } from '@/types/api'
 
 async function apiRequest<T>(
@@ -8,10 +7,6 @@ async function apiRequest<T>(
   body?: unknown,
   queryParams?: Record<string, string | number | undefined>,
 ): Promise<T> {
-  if (config.apiMode === 'dev') {
-    return mockRouter.handle<T>(method, path, body ?? queryParams)
-  }
-
   let url = `${config.baseUrl}${path}`
 
   if (queryParams) {
@@ -37,7 +32,15 @@ async function apiRequest<T>(
     let detail: string | undefined
     try {
       const err = await res.json()
-      detail = err.detail ?? err.message
+      if (typeof err.detail === 'string') {
+        detail = err.detail
+      } else if (err.detail !== null && typeof err.detail === 'object') {
+        const firstValue = Object.values(err.detail)[0]
+        detail = Array.isArray(firstValue) ? String(firstValue[0]) : String(firstValue)
+      }
+      if (!detail && typeof err.message === 'string') {
+        detail = err.message
+      }
     } catch {
       // ignore parse errors
     }

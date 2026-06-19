@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth.store'
-import { config } from '@/api/config'
 import AppInput from '@/components/ui/AppInput.vue'
 import AppButton from '@/components/ui/AppButton.vue'
 
@@ -21,12 +20,6 @@ async function handleSubmit() {
     const redirect = route.query['redirect'] as string | undefined
     router.push(redirect ?? { name: 'home' })
   }
-}
-
-async function loginAsDemo(role: 'admin' | 'user') {
-  email.value = role === 'admin' ? 'admin@reelmind.app' : 'user@reelmind.app'
-  password.value = role === 'admin' ? 'admin123' : 'user123'
-  await handleSubmit()
 }
 </script>
 
@@ -52,21 +45,6 @@ async function loginAsDemo(role: 'admin' | 'user') {
         </AppButton>
       </form>
 
-      <template v-if="config.apiMode === 'dev'">
-        <div class="divider"><span>lub demo</span></div>
-
-        <div class="demo-buttons">
-          <AppButton variant="secondary" @click="loginAsDemo('user')" style="flex:1;justify-content:center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            {{ t('auth.demo_user') }}
-          </AppButton>
-          <AppButton variant="ghost" @click="loginAsDemo('admin')" style="flex:1;justify-content:center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            {{ t('auth.demo_admin') }}
-          </AppButton>
-        </div>
-      </template>
-
       <p class="auth-switch">{{ t('auth.no_account') }} <RouterLink to="/register">{{ t('auth.sign_up') }}</RouterLink></p>
     </div>
   </div>
@@ -82,9 +60,6 @@ async function loginAsDemo(role: 'admin' | 'user') {
 .auth-sub { text-align: center; color: var(--text-muted); font-size: 14px; margin: 0 0 28px; }
 .auth-error { display: flex; align-items: center; gap: 8px; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: #f87171; border-radius: var(--radius-sm, 8px); padding: 10px 14px; font-size: 13px; margin-bottom: 20px; }
 .auth-form { display: flex; flex-direction: column; gap: 16px; }
-.divider { display: flex; align-items: center; gap: 12px; margin: 22px 0; color: var(--text-light); font-size: 12px; font-weight: 600; }
-.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.07); }
-.demo-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
 .auth-switch { text-align: center; font-size: 14px; color: var(--text-muted); margin: 16px 0 0; }
 .auth-switch a { color: var(--blue, #4361ee); text-decoration: none; font-weight: 700; }
 .auth-switch a:hover { text-decoration: underline; }
